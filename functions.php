@@ -41,143 +41,50 @@ static function getOptions() {
 	}
 
 static function add() {
-		if(isset($_POST['inove_save'])) {
+		if (isset($_POST['inove_save'])) {
+			if (!current_user_can('edit_theme_options')) {
+				wp_die(esc_html__('You are not allowed to modify theme options.', 'inove'));
+			}
+
+			check_admin_referer('inove_save_options', 'inove_options_nonce');
+
 			$options = iNoveOptions::getOptions();
+			$post_value = static function ($key, $default = '') {
+				return isset($_POST[$key]) ? wp_unslash($_POST[$key]) : $default;
+			};
+			$html_value = static function ($key) use ($post_value) {
+				$value = $post_value($key);
+				return current_user_can('unfiltered_html') ? $value : wp_kses_post($value);
+			};
 
-			// google custom search engine
-			if ($_POST['google_cse']) {
-				$options['google_cse'] = (bool)true;
-			} else {
-				$options['google_cse'] = (bool)false;
-			}
-			$options['google_cse_cx'] = stripslashes($_POST['google_cse_cx']);
-
-			// menu
-			$options['menu_type'] = stripslashes($_POST['menu_type']);
-
-			// sidebar
-			if ($_POST['nosidebar']) {
-				$options['nosidebar'] = (bool)true;
-			} else {
-				$options['nosidebar'] = (bool)false;
-			}
-
-			// notice
-			if ($_POST['notice']) {
-				$options['notice'] = (bool)true;
-			} else {
-				$options['notice'] = (bool)false;
-			}
-			$options['notice_content'] = stripslashes($_POST['notice_content']);
-
-			// banner
-			if (!$_POST['banner_registered']) {
-				$options['banner_registered'] = (bool)false;
-			} else {
-				$options['banner_registered'] = (bool)true;
-			}
-			if (!$_POST['banner_commentator']) {
-				$options['banner_commentator'] = (bool)false;
-			} else {
-				$options['banner_commentator'] = (bool)true;
-			}
-			if (!$_POST['banner_visitor']) {
-				$options['banner_visitor'] = (bool)false;
-			} else {
-				$options['banner_visitor'] = (bool)true;
-			}
-			$options['banner_content'] = stripslashes($_POST['banner_content']);
-
-			// showcase
-			if (!$_POST['showcase_registered']) {
-				$options['showcase_registered'] = (bool)false;
-			} else {
-				$options['showcase_registered'] = (bool)true;
-			}
-			if (!$_POST['showcase_commentator']) {
-				$options['showcase_commentator'] = (bool)false;
-			} else {
-				$options['showcase_commentator'] = (bool)true;
-			}
-			if (!$_POST['showcase_visitor']) {
-				$options['showcase_visitor'] = (bool)false;
-			} else {
-				$options['showcase_visitor'] = (bool)true;
-			}
-			if ($_POST['showcase_caption']) {
-				$options['showcase_caption'] = (bool)true;
-			} else {
-				$options['showcase_caption'] = (bool)false;
-			}
-			$options['showcase_title'] = stripslashes($_POST['showcase_title']);
-			$options['showcase_content'] = stripslashes($_POST['showcase_content']);
-
-			// posts
-			if ($_POST['author']) {
-				$options['author'] = (bool)true;
-			} else {
-				$options['author'] = (bool)false;
-			}
-			if ($_POST['categories']) {
-				$options['categories'] = (bool)true;
-			} else {
-				$options['categories'] = (bool)false;
-			}
-			if (!$_POST['tags']) {
-				$options['tags'] = (bool)false;
-			} else {
-				$options['tags'] = (bool)true;
+			foreach (array(
+				'google_cse', 'nosidebar', 'notice',
+				'banner_registered', 'banner_commentator', 'banner_visitor',
+				'showcase_registered', 'showcase_commentator', 'showcase_visitor',
+				'showcase_caption', 'author', 'categories', 'tags', 'ctrlentry',
+				'feed_readers', 'feed', 'feed_email', 'twitter', 'analytics'
+			) as $checkbox) {
+				$options[$checkbox] = isset($_POST[$checkbox]);
 			}
 
-			// ctrl + entry
-			if ($_POST['ctrlentry']) {
-				$options['ctrlentry'] = (bool)true;
-			} else {
-				$options['ctrlentry'] = (bool)false;
-			}
-
-			// feed
-			if (!$_POST['feed_readers']) {
-				$options['feed_readers'] = (bool)false;
-			} else {
-				$options['feed_readers'] = (bool)true;
-			}
-			if ($_POST['feed']) {
-				$options['feed'] = (bool)true;
-			} else {
-				$options['feed'] = (bool)false;
-			}
-			$options['feed_url'] = stripslashes($_POST['feed_url']);
-			if ($_POST['feed_email']) {
-				$options['feed_email'] = (bool)true;
-			} else {
-				$options['feed_email'] = (bool)false;
-			}
-			$options['feed_url_email'] = stripslashes($_POST['feed_url_email']);
-
-			// twitter
-			if ($_POST['twitter']) {
-				$options['twitter'] = (bool)true;
-			} else {
-				$options['twitter'] = (bool)false;
-			}
-			$options['twitter_username'] = stripslashes($_POST['twitter_username']);
-
-			// analytics
-			if ($_POST['analytics']) {
-				$options['analytics'] = (bool)true;
-			} else {
-				$options['analytics'] = (bool)false;
-			}
-			$options['analytics_content'] = stripslashes($_POST['analytics_content']);
+			$menu_type = sanitize_key($post_value('menu_type', 'pages'));
+			$options['menu_type'] = in_array($menu_type, array('pages', 'categories'), true) ? $menu_type : 'pages';
+			$options['google_cse_cx'] = sanitize_text_field($post_value('google_cse_cx'));
+			$options['notice_content'] = $html_value('notice_content');
+			$options['banner_content'] = $html_value('banner_content');
+			$options['showcase_title'] = sanitize_text_field($post_value('showcase_title'));
+			$options['showcase_content'] = $html_value('showcase_content');
+			$options['feed_url'] = esc_url_raw($post_value('feed_url'));
+			$options['feed_url_email'] = esc_url_raw($post_value('feed_url_email'));
+			$options['twitter_username'] = sanitize_text_field($post_value('twitter_username'));
+			$options['analytics_content'] = $html_value('analytics_content');
 
 			update_option('inove_options', $options);
-
 		} else {
 			iNoveOptions::getOptions();
 		}
 
-		add_theme_page(__('Current Theme Options', 'inove'), __('Current Theme Options', 'inove'), 'edit_themes', basename(__FILE__), array('iNoveOptions', 'display'));
+		add_theme_page(__('Current Theme Options', 'inove'), __('Current Theme Options', 'inove'), 'edit_theme_options', basename(__FILE__), array('iNoveOptions', 'display'));
 	}
 
 static function display() {
@@ -185,6 +92,7 @@ static function display() {
 ?>
 
 <form action="#" method="post" enctype="multipart/form-data" name="inove_form" id="inove_form">
+	<?php wp_nonce_field('inove_save_options', 'inove_options_nonce'); ?>
 	<div class="wrap">
 		<h2><?php _e('Current Theme Options', 'inove'); ?></h2>
 
@@ -199,7 +107,7 @@ static function display() {
 						</label>
 						<br/>
 						<?php _e('CX:', 'inove'); ?>
-						 <input type="text" name="google_cse_cx" id="google_cse_cx" class="code" size="40" value="<?php echo($options['google_cse_cx']); ?>">
+						 <input type="text" name="google_cse_cx" id="google_cse_cx" class="code" size="40" value="<?php echo esc_attr($options['google_cse_cx']); ?>">
 						<br/>
 						<?php printf(__('Find <code>name="cx"</code> in the <strong>Search box code</strong> of <a href="%1$s">Google Custom Search Engine</a>, and type the <code>value</code> here.<br/>For example: <code>014782006753236413342:1ltfrybsbz4</code>', 'inove'), 'https://www.google.com/coop/cse/'); ?>
 					</td>
@@ -255,7 +163,7 @@ static function display() {
 						</label>
 						<br />
 						<label>
-							<textarea name="notice_content" id="notice_content" cols="50" rows="10" style="width:98%;font-size:12px;" class="code"><?php echo($options['notice_content']); ?></textarea>
+							<textarea name="notice_content" id="notice_content" cols="50" rows="10" style="width:98%;font-size:12px;" class="code"><?php echo esc_textarea($options['notice_content']); ?></textarea>
 						</label>
 						<!-- notice END -->
 					</td>
@@ -290,7 +198,7 @@ static function display() {
 						</label>
 						<br/>
 						<label>
-							<textarea name="banner_content" id="banner_content" cols="50" rows="10" style="width:98%;font-size:12px;" class="code"><?php echo($options['banner_content']); ?></textarea>
+							<textarea name="banner_content" id="banner_content" cols="50" rows="10" style="width:98%;font-size:12px;" class="code"><?php echo esc_textarea($options['banner_content']); ?></textarea>
 						</label>
 						<!-- banner END -->
 					</td>
@@ -328,10 +236,10 @@ static function display() {
 							<input name="showcase_caption" type="checkbox" value="checkbox" <?php if($options['showcase_caption']) echo "checked='checked'"; ?> />
 							 <?php _e('Title:', 'inove'); ?>
 						</label>
-						 <input type="text" name="showcase_title" id="showcase_title" class="code" size="40" value="<?php echo($options['showcase_title']); ?>" />
+						 <input type="text" name="showcase_title" id="showcase_title" class="code" size="40" value="<?php echo esc_attr($options['showcase_title']); ?>" />
 						<br/>
 						<label>
-							<textarea name="showcase_content" id="showcase_content" cols="50" rows="10" style="width:98%;font-size:12px;" class="code"><?php echo($options['showcase_content']); ?></textarea>
+							<textarea name="showcase_content" id="showcase_content" cols="50" rows="10" style="width:98%;font-size:12px;" class="code"><?php echo esc_textarea($options['showcase_content']); ?></textarea>
 						</label>
 						<!-- showcase END -->
 					</td>
@@ -389,13 +297,13 @@ static function display() {
 							<input name="feed" type="checkbox" value="checkbox" <?php if($options['feed']) echo "checked='checked'"; ?> />
 							 <?php _e('Custom feed.', 'inove'); ?>
 						</label>
-						 <?php _e('URL:', 'inove'); ?> <input type="text" name="feed_url" id="feed_url" class="code" size="60" value="<?php echo($options['feed_url']); ?>">
+						 <?php _e('URL:', 'inove'); ?> <input type="text" name="feed_url" id="feed_url" class="code" size="60" value="<?php echo esc_attr($options['feed_url']); ?>">
 						<br/>
 						<label>
 							<input name="feed_email" type="checkbox" value="checkbox" <?php if($options['feed_email']) echo "checked='checked'"; ?> />
 							 <?php _e('Email feed.', 'inove'); ?>
 						</label>
-						 <?php _e('URL:', 'inove'); ?> <input type="text" name="feed_url_email" id="feed_url_email" class="code" size="60" value="<?php echo($options['feed_url_email']); ?>">
+						 <?php _e('URL:', 'inove'); ?> <input type="text" name="feed_url_email" id="feed_url_email" class="code" size="60" value="<?php echo esc_attr($options['feed_url_email']); ?>">
 					</td>
 				</tr>
 			</tbody>
@@ -412,7 +320,7 @@ static function display() {
 						</label>
 						<br />
 						 <?php _e('Twitter username:', 'inove'); ?>
-						 <input type="text" name="twitter_username" id="twitter_username" class="code" size="40" value="<?php echo($options['twitter_username']); ?>">
+						 <input type="text" name="twitter_username" id="twitter_username" class="code" size="40" value="<?php echo esc_attr($options['twitter_username']); ?>">
 						<br />
 						<a href="https://twitter.com/neoease/" onclick="window.open(this.href);return false;">Follow NeoEase</a>
 						 | <a href="https://twitter.com/mg12/" onclick="window.open(this.href);return false;">Follow MG12</a>
@@ -435,7 +343,7 @@ static function display() {
 							 <?php _e('Add web analytics code to your site. (e.g. Google Analytics, Yahoo! Web Analytics, ...)', 'inove'); ?>
 						</label>
 						<label>
-							<textarea name="analytics_content" cols="50" rows="10" id="analytics_content" class="code" style="width:98%;font-size:12px;"><?php echo($options['analytics_content']); ?></textarea>
+							<textarea name="analytics_content" cols="50" rows="10" id="analytics_content" class="code" style="width:98%;font-size:12px;"><?php echo esc_textarea($options['analytics_content']); ?></textarea>
 						</label>
 					</td>
 				</tr>
