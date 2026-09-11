@@ -8,7 +8,7 @@
 
 <?php if (is_search()) : ?>
 	<div class="boxcaption"><h3><?php _e('Search Results', 'inove'); ?></h3></div>
-	<div class="box"><?php printf( __('Keyword: &#8216;%1$s&#8217;', 'inove'), wp_specialchars($s, 1) ); ?></div>
+	<div class="box"><?php printf( __('Keyword: &#8216;%1$s&#8217;', 'inove'), esc_html(get_search_query()) ); ?></div>
 
 <?php else : ?>
 	<div class="boxcaption"><h3><?php _e('Archive', 'inove'); ?></h3></div>
