@@ -6,7 +6,7 @@
 		<h2><?php the_title(); ?></h2>
 		<div class="info">
 			<?php edit_post_link(__('Edit', 'inove'), '<span class="editpost">', '</span>'); ?>
-			<?php if ($comments || comments_open()) : ?>
+			<?php if (get_comments_number() > 0 || comments_open()) : ?>
 				<span class="addcomment"><a href="#respond"><?php _e('Leave a comment', 'inove'); ?></a></span>
 				<span class="comments"><a href="#comments"><?php _e('Go to comments', 'inove'); ?></a></span>
 			<?php endif; ?>
