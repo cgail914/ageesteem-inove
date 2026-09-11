@@ -1,0 +1,4 @@
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/gwfrvzlm/public_html/wp-content/themes/inove/
+    - /bin/cp -R * $DEPLOYPATH
