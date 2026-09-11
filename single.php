@@ -15,7 +15,7 @@
 			<span class="date"><?php the_time(__('F jS, Y', 'inove')) ?></span>
 			<?php if ($options['author']) : ?><span class="author"><?php the_author_posts_link(); ?></span><?php endif; ?>
 			<?php edit_post_link(__('Edit', 'inove'), '<span class="editpost">', '</span>'); ?>
-			<?php if ($comments || comments_open()) : ?>
+			<?php if (get_comments_number() > 0 || comments_open()) : ?>
 				<span class="addcomment"><a href="#respond"><?php _e('Leave a comment', 'inove'); ?></a></span>
 				<span class="comments"><a href="#comments"><?php _e('Go to comments', 'inove'); ?></a></span>
 			<?php endif; ?>
