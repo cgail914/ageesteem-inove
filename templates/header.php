@@ -3,9 +3,9 @@
 
 	<!-- banner START -->
 	<?php if( $options['banner_content'] && (
-		($options['banner_registered'] && $user_ID) || 
-		($options['banner_commentator'] && !$user_ID && isset($_COOKIE['comment_author_'.COOKIEHASH])) || 
-		($options['banner_visitor'] && !$user_ID && !isset($_COOKIE['comment_author_'.COOKIEHASH]))
+		($options['banner_registered'] && is_user_logged_in()) || 
+		($options['banner_commentator'] && !is_user_logged_in() && isset($_COOKIE['comment_author_'.COOKIEHASH])) || 
+		($options['banner_visitor'] && !is_user_logged_in() && !isset($_COOKIE['comment_author_'.COOKIEHASH]))
 	) ) : ?>
 		<div class="banner">
 			<?php echo($options['banner_content']); ?>
@@ -26,7 +26,7 @@ CGA EDIT END -->
 <div id="navigation">
 	<!-- menus START -->
 	<ul id="menus">
-		<li class="<?php echo($home_menu); ?>"><a class="home" title="<?php _e('Home', 'inove'); ?>" href="<?php echo get_settings('home'); ?>/"><?php _e('Home', 'inove'); ?></a></li>
+		<li class="<?php echo($home_menu); ?>"><a class="home" title="<?php _e('Home', 'inove'); ?>" href="<?php echo esc_url(home_url('/')); ?>"><?php _e('Home', 'inove'); ?></a></li>
 		<?php
 			if($options['menu_type'] == 'categories') {
 				wp_list_categories('title_li=0&orderby=name&show_count=0');
