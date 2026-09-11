@@ -11,7 +11,7 @@
 		if (substr(strtoupper($options['feed_url']), 0, 7) == 'HTTP://') {
 			$feed = $options['feed_url'];
 		} else {
-			$feed = 'http://' . $options['feed_url'];
+			$feed = 'https://' . $options['feed_url'];
 		}
 	} else {
 		$feed = get_bloginfo('rss2_url');
@@ -24,7 +24,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
 
 	<title><?php bloginfo('name'); ?><?php wp_title(); ?></title>
-	<link rel="alternate" type="application/rss+xml" title="<?php _e('RSS 2.0 - all posts', 'inove'); ?>" href="<?php echo $feed; ?>" />
+	<link rel="alternate" type="application/rss+xml" title="<?php _e('RSS 2.0 - all posts', 'inove'); ?>" href="<?php echo esc_url($feed); ?>" />
 	<link rel="alternate" type="application/rss+xml" title="<?php _e('RSS 2.0 - all comments', 'inove'); ?>" href="<?php bloginfo('comments_rss2_url'); ?>" />
 	<link rel="pingback" href="<?php bloginfo('pingback_url'); ?>" />
 
