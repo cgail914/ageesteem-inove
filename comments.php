@@ -1,4 +1,4 @@
-<script type="text/javascript" src="<?php bloginfo('template_url'); ?>/js/comment.js"></script>
+<script type="text/javascript" src="<?php echo esc_url(get_template_directory_uri() . '/js/comment.js'); ?>"></script>
 
 <?php if (post_password_required()) : ?>
 	<div class="errorbox">
@@ -182,7 +182,7 @@
 
 		<!-- comment submit and rss -->
 		<div id="submitbox">
-			<a class="feed" href="<?php bloginfo('comments_rss2_url'); ?>"><?php _e('Subscribe to comments feed', 'inove'); ?></a>
+			<a class="feed" href="<?php echo esc_url(get_post_comments_feed_link()); ?>"><?php _e('Subscribe to comments feed', 'inove'); ?></a>
 			<div class="submitbutton">
 				<input name="submit" type="submit" id="submit" class="button" tabindex="5" value="<?php _e('Submit Comment', 'inove'); ?>" />
 			</div>
