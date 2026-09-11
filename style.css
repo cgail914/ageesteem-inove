@@ -236,6 +236,18 @@ textarea {
 	float:left;
 	z-index:1;
 }
+#menus > li {
+	float:left;
+	position:relative;
+}
+#menus > li > a {
+	float:none;
+}
+#menus > li > ul {
+	left:0 !important;
+	top:31px !important;
+}
+
 #menus li a:hover, 
 #menus li a.current {
 	background-position:0 -31px;
