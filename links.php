@@ -15,8 +15,8 @@ Template Name: Links
 		<h2>
 			<?php if ( $user_ID ) : ?>
 				<div class="act">
-					<span class="addlink"><a href="<?php echo get_settings('siteurl'); ?>/wp-admin/link-add.php"><?php _e('Add link', 'inove'); ?></a></span>
-					<span class="editlinks"><a href="<?php echo get_settings('siteurl'); ?>/wp-admin/link-manager.php"><?php _e('Edit links', 'inove'); ?></a></span>
+					<span class="addlink"><a href="<?php echo esc_url(admin_url('link-add.php')); ?>"><?php _e('Add link', 'inove'); ?></a></span>
+					<span class="editlinks"><a href="<?php echo esc_url(admin_url('link-manager.php')); ?>"><?php _e('Edit links', 'inove'); ?></a></span>
 				</div>
 			<?php endif; ?>
 			<?php the_title(); ?>
