@@ -1,6 +1,6 @@
 <script type="text/javascript" src="<?php bloginfo('template_url'); ?>/js/comment.js"></script>
 
-<?php if (!empty($post->post_password) && $_COOKIE['wp-postpass_' . COOKIEHASH] != $post->post_password) : ?>
+<?php if (!empty($post->post_password) && (!isset($_COOKIE['wp-postpass_' . COOKIEHASH]) || $_COOKIE['wp-postpass_' . COOKIEHASH] !== $post->post_password)) : ?>
 	<div class="errorbox">
 		<?php _e('Enter your password to view comments.', 'inove'); ?>
 	</div>
@@ -10,7 +10,7 @@
 	$options = get_option('inove_options');
 	// for WordPress 2.7 or higher
 	if (function_exists('wp_list_comments')) {
-		$trackbacks = $comments_by_type['pings'];
+		$trackbacks = isset($comments_by_type['pings']) ? $comments_by_type['pings'] : array();
 	// for WordPress 2.6.3 or lower
 	} else {
 		$trackbacks = $wpdb->get_results($wpdb->prepare("SELECT * FROM $wpdb->comments WHERE comment_post_ID = %d AND comment_approved = '1' AND (comment_type = 'pingback' OR comment_type = 'trackback') ORDER BY comment_date", $post->ID));
@@ -122,29 +122,21 @@
 	<div class="messagebox">
 		<?php _e('Comments are closed.', 'inove'); ?>
 	</div>
-<?php elseif ( get_option('comment_registration') && !$user_ID ) : // If registration required and not logged in. ?>
+<?php elseif (get_option('comment_registration') && !is_user_logged_in()) : // If registration required and not logged in. ?>
 	<div id="comment_login" class="messagebox">
 		<?php
-			if (function_exists('wp_login_url')) {
-				$login_link = wp_login_url();
-			} else {
-				$login_link = wp_login_url(get_permalink());
-			}
+			$login_link = wp_login_url(get_permalink());
 		?>
-		<?php printf(__('You must be <a href="%s">logged in</a> to post a comment.', 'inove'), $login_link); ?>
+		<?php printf(__('You must be <a href="%s">logged in</a> to post a comment.', 'inove'), esc_url($login_link)); ?>
 	</div>
 
 <?php else : ?>
 	<form action="<?php echo esc_url(site_url('/wp-comments-post.php')); ?>" method="post" id="commentform">
 	<div id="respond">
 
-		<?php if ($user_ID) : ?>
+		<?php if (is_user_logged_in()) : ?>
 			<?php
-				if (function_exists('wp_logout_url')) {
-					$logout_link = wp_logout_url();
-				} else {
-					$logout_link = wp_logout_url(get_permalink());
-				}
+				$logout_link = wp_logout_url(get_permalink());
 			?>
 			<div class="row">
 				<?php _e('Logged in as', 'inove'); ?> <a href="<?php echo esc_url(admin_url('profile.php')); ?>"><strong><?php echo $user_identity; ?></strong></a>.
@@ -162,15 +154,15 @@
 
 			<div id="author_info">
 				<div class="row">
-					<input type="text" name="author" id="author" class="textfield" value="<?php echo $comment_author; ?>" size="24" tabindex="1" />
+					<input type="text" name="author" id="author" class="textfield" value="<?php echo esc_attr($comment_author); ?>" size="24" tabindex="1" />
 					<label for="author" class="small"><?php _e('Name', 'inove'); ?> <?php if ($req) _e('(required)', 'inove'); ?></label>
 				</div>
 				<div class="row">
-					<input type="text" name="email" id="email" class="textfield" value="<?php echo $comment_author_email; ?>" size="24" tabindex="2" />
+					<input type="text" name="email" id="email" class="textfield" value="<?php echo esc_attr($comment_author_email); ?>" size="24" tabindex="2" />
 					<label for="email" class="small"><?php _e('E-Mail (will not be published)', 'inove');?> <?php if ($req) _e('(required)', 'inove'); ?></label>
 				</div>
 				<div class="row">
-					<input type="text" name="url" id="url" class="textfield" value="<?php echo $comment_author_url; ?>" size="24" tabindex="3" />
+					<input type="text" name="url" id="url" class="textfield" value="<?php echo esc_attr($comment_author_url); ?>" size="24" tabindex="3" />
 					<label for="url" class="small"><?php _e('Website', 'inove'); ?></label>
 				</div>
 			</div>
@@ -195,7 +187,7 @@
 			<?php if (function_exists('highslide_emoticons')) : ?>
 				<div id="emoticon"><?php highslide_emoticons(); ?></div>
 			<?php endif; ?>
-			<input type="hidden" name="comment_post_ID" value="<?php echo $id; ?>" />
+			<input type="hidden" name="comment_post_ID" value="<?php echo esc_attr(get_the_ID()); ?>" />
 			<div class="fixed"></div>
 		</div>
 
