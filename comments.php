@@ -128,14 +128,14 @@
 			if (function_exists('wp_login_url')) {
 				$login_link = wp_login_url();
 			} else {
-				$login_link = get_option('siteurl') . '/wp-login.php?redirect_to=' . urlencode(get_permalink());
+				$login_link = wp_login_url(get_permalink());
 			}
 		?>
 		<?php printf(__('You must be <a href="%s">logged in</a> to post a comment.', 'inove'), $login_link); ?>
 	</div>
 
 <?php else : ?>
-	<form action="<?php echo get_option('siteurl'); ?>/wp-comments-post.php" method="post" id="commentform">
+	<form action="<?php echo esc_url(site_url('/wp-comments-post.php')); ?>" method="post" id="commentform">
 	<div id="respond">
 
 		<?php if ($user_ID) : ?>
@@ -143,12 +143,12 @@
 				if (function_exists('wp_logout_url')) {
 					$logout_link = wp_logout_url();
 				} else {
-					$logout_link = get_option('siteurl') . '/wp-login.php?action=logout';
+					$logout_link = wp_logout_url(get_permalink());
 				}
 			?>
 			<div class="row">
-				<?php _e('Logged in as', 'inove'); ?> <a href="<?php echo get_option('siteurl'); ?>/wp-admin/profile.php"><strong><?php echo $user_identity; ?></strong></a>.
-				 <a href="<?php echo $logout_link; ?>" title="<?php _e('Log out of this account', 'inove'); ?>"><?php _e('Logout &raquo;', 'inove'); ?></a>
+				<?php _e('Logged in as', 'inove'); ?> <a href="<?php echo esc_url(admin_url('profile.php')); ?>"><strong><?php echo $user_identity; ?></strong></a>.
+				 <a href="<?php echo esc_url($logout_link); ?>" title="<?php _e('Log out of this account', 'inove'); ?>"><?php _e('Logout &raquo;', 'inove'); ?></a>
 			</div>
 
 			<?php else : ?>
