@@ -201,7 +201,7 @@ static function display() {
 						<?php _e('CX:', 'inove'); ?>
 						 <input type="text" name="google_cse_cx" id="google_cse_cx" class="code" size="40" value="<?php echo($options['google_cse_cx']); ?>">
 						<br/>
-						<?php printf(__('Find <code>name="cx"</code> in the <strong>Search box code</strong> of <a href="%1$s">Google Custom Search Engine</a>, and type the <code>value</code> here.<br/>For example: <code>014782006753236413342:1ltfrybsbz4</code>', 'inove'), 'http://www.google.com/coop/cse/'); ?>
+						<?php printf(__('Find <code>name="cx"</code> in the <strong>Search box code</strong> of <a href="%1$s">Google Custom Search Engine</a>, and type the <code>value</code> here.<br/>For example: <code>014782006753236413342:1ltfrybsbz4</code>', 'inove'), 'https://www.google.com/coop/cse/'); ?>
 					</td>
 				</tr>
 			</tbody>
@@ -414,8 +414,8 @@ static function display() {
 						 <?php _e('Twitter username:', 'inove'); ?>
 						 <input type="text" name="twitter_username" id="twitter_username" class="code" size="40" value="<?php echo($options['twitter_username']); ?>">
 						<br />
-						<a href="http://twitter.com/neoease/" onclick="window.open(this.href);return false;">Follow NeoEase</a>
-						 | <a href="http://twitter.com/mg12/" onclick="window.open(this.href);return false;">Follow MG12</a>
+						<a href="https://twitter.com/neoease/" onclick="window.open(this.href);return false;">Follow NeoEase</a>
+						 | <a href="https://twitter.com/mg12/" onclick="window.open(this.href);return false;">Follow MG12</a>
 					</td>
 				</tr>
 			</tbody>
