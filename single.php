@@ -4,7 +4,7 @@
 <?php if (have_posts()) : the_post(); update_post_caches($posts); ?>
 
 	<div id="postpath">
-		<a title="<?php _e('Go to homepage', 'inove'); ?>" href="<?php echo get_settings('home'); ?>/"><?php _e('Home', 'inove'); ?></a>
+		<a title="<?php _e('Go to homepage', 'inove'); ?>" href="<?php echo esc_url(home_url('/')); ?>"><?php _e('Home', 'inove'); ?></a>
 		 &gt; <?php the_category(', '); ?>
 		 &gt; <?php the_title(); ?>
 	</div>
