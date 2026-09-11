@@ -50,7 +50,10 @@ static function add() {
 
 			$options = iNoveOptions::getOptions();
 			$post_value = static function ($key, $default = '') {
-				return isset($_POST[$key]) ? wp_unslash($_POST[$key]) : $default;
+				if (!isset($_POST[$key]) || !is_string($_POST[$key])) {
+					return $default;
+				}
+				return wp_unslash($_POST[$key]);
 			};
 			$html_value = static function ($key) use ($post_value) {
 				$value = $post_value($key);
