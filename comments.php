@@ -1,6 +1,6 @@
 <script type="text/javascript" src="<?php bloginfo('template_url'); ?>/js/comment.js"></script>
 
-<?php if (!empty($post->post_password) && (!isset($_COOKIE['wp-postpass_' . COOKIEHASH]) || $_COOKIE['wp-postpass_' . COOKIEHASH] !== $post->post_password)) : ?>
+<?php if (post_password_required()) : ?>
 	<div class="errorbox">
 		<?php _e('Enter your password to view comments.', 'inove'); ?>
 	</div>
@@ -8,6 +8,8 @@
 
 <?php
 	$options = get_option('inove_options');
+	$comments = isset($comments) && is_array($comments) ? $comments : array();
+	$comments_by_type = separate_comments($comments);
 	// for WordPress 2.7 or higher
 	if (function_exists('wp_list_comments')) {
 		$trackbacks = isset($comments_by_type['pings']) ? $comments_by_type['pings'] : array();
