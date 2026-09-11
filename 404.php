@@ -19,14 +19,14 @@
 
 <div id="container">
 	<div id="talker">
-		<a href="http://www.neoease.com/"><img src="<?php bloginfo('template_url'); ?>/img/lovelace.gif" alt="<?php _e('Talker', 'inove'); ?>" /></a>
+		<a href="https://www.neoease.com/"><img src="<?php echo esc_url(get_template_directory_uri() . '/img/lovelace.gif'); ?>" alt="<?php _e('Talker', 'inove'); ?>" /></a>
 	</div>
 	<div id="notice">
 		<h1><?php _e('Welcome to 404 error page!', 'inove'); ?></h1>
 		<p><?php _e("Welcome to this customized error page. You've reached this page because you've clicked on a link that does not exist. This is probably our fault... but instead of showing you the basic '404 Error' page that is confusing and doesn't really explain anything, we've created this page to explain what went wrong.", 'inove'); ?></p>
 		<p><?php _e("You can either (a) click on the 'back' button in your browser and try to navigate through our site in a different direction, or (b) click on the following link to go to homepage.", 'inove'); ?></p>
 		<div class="back">
-			<a href="<?php bloginfo('url'); ?>/"><?php _e('Back to homepage &raquo;', 'inove'); ?></a>
+			<a href="<?php echo esc_url(home_url('/')); ?>"><?php _e('Back to homepage &raquo;', 'inove'); ?></a>
 		</div>
 		<div class="fixed"></div>
 	</div>
