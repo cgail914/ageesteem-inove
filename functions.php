@@ -485,6 +485,9 @@ function theme_init(){
 }
 add_action ('init', 'theme_init');
 
+/** Use the classic widget screen for this legacy theme. */
+add_filter('use_widgets_block_editor', '__return_false');
+
 /** widgets */
 if( function_exists('register_sidebar') ) {
 	register_sidebar(array(
