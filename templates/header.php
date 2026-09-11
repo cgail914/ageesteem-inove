@@ -41,18 +41,18 @@ CGA EDIT END -->
 <!-- searchbox START -->
 	<div id="searchbox">
 		<?php if($options['google_cse'] && $options['google_cse_cx']) : ?>
-			<form action="http://www.google.com/cse" method="get">
+			<form action="https://www.google.com/cse" method="get">
 				<div class="content">
 					<input type="text" class="textfield" name="q" size="24" />
 					<input type="submit" class="button" name="sa" value="" />
-					<input type="hidden" name="cx" value="<?php echo $options['google_cse_cx']; ?>" />
+					<input type="hidden" name="cx" value="<?php echo esc_attr($options['google_cse_cx']); ?>" />
 					<input type="hidden" name="ie" value="UTF-8" />
 				</div>
 			</form>
 		<?php else : ?>
-			<form action="<?php bloginfo('home'); ?>" method="get">
+			<form action="<?php echo esc_url(home_url('/')); ?>" method="get">
 				<div class="content">
-					<input type="text" class="textfield" name="s" size="24" value="<?php echo wp_specialchars($s, 1); ?>" />
+					<input type="text" class="textfield" name="s" size="24" value="<?php echo esc_attr(get_search_query()); ?>" />
 					<input type="submit" class="button" value="" />
 				</div>
 			</form>
